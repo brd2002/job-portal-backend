@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import {connectDB} from "./utils/db.js";
 import {userRouter} from './routes/user.route.js'
 import {companyRouter} from "./routes/company.route.js";
+import {jobRouter} from "./routes/job.route.js";
 dotenv.config();
 const app = express();
 // middleware
@@ -21,6 +22,9 @@ app.use(
 )
 app.use(
     '/api/v1/company' , companyRouter
+);
+app.use(
+    '/api/v1/job' , jobRouter
 )
 const port = process.env.PORT || 8080;
 app.listen(port , ()=>{

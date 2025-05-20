@@ -1,0 +1,85 @@
+import {Job} from "../models/job.model.js";
+import {User} from "../models/user.model.js";
+
+// for admin
+export const postJob = async (req, res) => {
+    try {
+        const {title , description , requirements , salary , location , jobType ,experience, position , companyId} = req.body;
+        // if (!title || !description  || !salary || !location || !jobType || !experience || !position || !companyId) {
+        //     console.log(req.body);
+        //     return res.status(400).json({message : "All fields are required", success : false});
+        // }
+        const userId = req.id;
+        const findUser = await User.findById(userId);
+        if (!findUser) {
+            return res.status(400).json({message : "User not found", success : false});
+        }
+        const job = await Job.create({title , description , requirements : requirements , salary , location , jobType ,experienceLevel : experience, position ,company :  companyId ,created_by : req.id});
+        if(!job) {
+            return res.status(400).json({message : "Something went wrong", success : false});
+        }
+        return res.status(200).json({message : "Job posted successfully", success : true , data : job});
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+// student
+export const getAllJobs = async (req, res) => {
+    try{
+        const userId = req.id;
+        const findUser = await User.findById(userId);
+        if (!findUser) {
+            return res.status(400).json({message : "User not found", success : false});
+        }
+        const keyword = req.query.keyword || "";
+        const query = {
+            $or:[
+                {title : {$regex : keyword , $options : "i"}},
+                {description : {$regex : keyword , $options : "i"}},
+            ]
+        }
+        const jobs = await Job.find(query).populate("company");
+        console.log(jobs.company);
+        if(!jobs) {
+            return res.status(400).json({message : "Job not found", success : false});
+        }
+        return res.status(200).json({message : "Jobs fetched successfully", success : true , data : jobs});
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+// student
+export const getJobById = async (req, res) => {
+    try{
+        const userId = req.id;
+        const findUser = await User.findById(userId);
+        if (!findUser) {
+            return res.status(400).json({message : "User not found", success : false});
+        }
+        const jobId = req.params.id;
+        const job = await Job.findById(jobId);
+        if(!job) {
+            return res.status(400).json({message : "Job not found", success : false});
+        }
+        return res.status(200).json({message : "Job fetched successfully", success : true , data : job});
+    }catch (error) {
+        console.log(error.message);
+    }
+}
+//? admin how many jobs created
+export const getAdminJobs = async (req, res) => {
+    try{
+        const userId = req.id;
+        const findUser = await User.findById(userId);
+        if (!findUser) {
+            return res.status(400).json({message : "User not found", success : false});
+        }
+        const jobs = await Job.find({created_by : userId}).populate("company");
+        if(!jobs) {
+            return res.status(400).json({message : "Job not found", success : false});
+        }
+        return res.status(200).json({message : "Jobs fetched successfully", success : true , data : jobs});
+    }catch (error) {
+        console.log(error.message);
+    }
+}
