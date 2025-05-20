@@ -11,7 +11,7 @@ export const isAuthenticated = async (req, res, next) => {
             return res.status(401).json({message : "Unauthorized", success : false});
         }
         req.id = decoded.userId;
-        console.log(req.userId)
+        // console.log(req.userId)
         next();
     } catch (e) {
 
