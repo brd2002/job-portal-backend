@@ -23,6 +23,11 @@ app.get('/' , (req , res)=>{
         message : "Hello from backend"
     })
 })
+app.get('/hello' , (req , res)=>{
+    return res.status(200).json({
+        message : "Hello from backend pm2 is updated"
+    })
+})
 app.use(
     '/api/v1/user' , userRouter
 )
