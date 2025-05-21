@@ -18,6 +18,11 @@ const corsOptions = {
     credentials : true
 }
 app.use(cors());
+app.get('/' , (req , res)=>{
+    return res.status(200).json({
+        message : "Hello from backend"
+    })
+})
 app.use(
     '/api/v1/user' , userRouter
 )
